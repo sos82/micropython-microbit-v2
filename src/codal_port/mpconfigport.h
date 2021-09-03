@@ -115,6 +115,7 @@ extern const struct _mp_obj_module_t radio_module;
 extern const struct _mp_obj_module_t speech_module;
 extern const struct _mp_obj_module_t this_module;
 extern const struct _mp_obj_module_t utime_module;
+extern const struct _mp_obj_module_t superbit_module;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_antigravity), MP_ROM_PTR(&antigravity_module) }, \
@@ -129,6 +130,7 @@ extern const struct _mp_obj_module_t utime_module;
     { MP_ROM_QSTR(MP_QSTR_speech), MP_ROM_PTR(&speech_module) }, \
     { MP_ROM_QSTR(MP_QSTR_this), MP_ROM_PTR(&this_module) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&utime_module) }, \
+    { MP_ROM_QSTR(MP_QSTR_superbit), MP_ROM_PTR(&superbit_module) }, \
 
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8]; \
