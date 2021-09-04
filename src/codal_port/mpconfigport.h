@@ -97,7 +97,7 @@
 #endif
 
 #define MICROBIT_RELEASE "2.0.0"
-#define MICROBIT_BOARD_NAME "micro:bit"
+#define MICROBIT_BOARD_NAME "micro:bit (support Superbit)"
 #define MICROPY_HW_BOARD_NAME MICROBIT_BOARD_NAME " v" MICROBIT_RELEASE
 #define MICROPY_HW_MCU_NAME "nRF52833"
 

@@ -1,5 +1,4 @@
 #include "drv_PCA9685.h"
-#include <stdio.h>
 #include "py/mperrno.h"
 #include "py/runtime.h"
 #include "py/mphal.h"
@@ -26,7 +25,6 @@ uint8_t pca9685_ReadData(uint8_t addr)
 
 void pca9685_init(void)
 {
-
     const microbit_pin_obj_t *sda = &microbit_p20_obj;
     const microbit_pin_obj_t *scl = &microbit_p19_obj;
 
@@ -48,7 +46,6 @@ void pca9685_init(void)
     mode = mode & ~PCA9684_SLEEP;
     pca9685_WriteCmd(PCA9684_MODE1, mode);
     mp_hal_delay_ms(5);
-
 }
 
 void pca9685_SetPwmFreq(int freq_hz)
@@ -59,7 +56,6 @@ void pca9685_SetPwmFreq(int freq_hz)
     prescaleval /= (freq_hz);
     prescaleval -= 1.0;
     int prescale = (int) floor(prescaleval + 0.5);
-    printf("prescale=%d\r\n", prescale);
 
     oldMode = pca9685_ReadData(PCA9684_MODE1);
     pca9685_WriteCmd(PCA9684_MODE1, (oldMode & 0x7F) | 0x10);
@@ -70,22 +66,23 @@ void pca9685_SetPwmFreq(int freq_hz)
     pca9685_WriteCmd(PCA9684_MODE1, oldMode | 0x80);
 }
 
-void pca9685_SetPwm(int channel, int on, int off)
+void pca9685_SetPwm(uint8_t channel, uint16_t on, uint16_t off)
 {
-    printf("on=%d, off = %d\r\n", on, off);
+    //printf("channel = %d, on = %d, off = %d\r\n", channel, on, off);
     pca9685_WriteCmd(PCA9684_LED0_ON_L + 4*channel, on & 0xFF);
     pca9685_WriteCmd(PCA9684_LED0_ON_H + 4*channel, on >> 8);
     pca9685_WriteCmd(PCA9684_LED0_OFF_L + 4*channel, off & 0xFF);
     pca9685_WriteCmd(PCA9684_LED0_OFF_H + 4*channel, off >> 8);
 
-    on = pca9685_ReadData(PCA9684_LED0_ON_L + 4*channel);
-    on |= pca9685_ReadData(PCA9684_LED0_ON_H + 4*channel) << 8;
-    off = pca9685_ReadData(PCA9684_LED0_OFF_L + 4*channel);
-    off |= pca9685_ReadData(PCA9684_LED0_OFF_H + 4*channel) << 8;
-    printf("on=%d, off = %d\r\n", on, off);
+    //mp_hal_delay_ms(5);
+    //on = pca9685_ReadData(PCA9684_LED0_ON_L + 4*channel);
+    //on |= pca9685_ReadData(PCA9684_LED0_ON_H + 4*channel) << 8;
+    //off = pca9685_ReadData(PCA9684_LED0_OFF_L + 4*channel);
+    //off |= pca9685_ReadData(PCA9684_LED0_OFF_H + 4*channel) << 8;
+    //printf("channel = %d, on = %d, off = %d\r\n", channel, on, off);
 }
 
-void pca9685_SetAllPwm(int on, int off)
+void pca9685_SetAllPwm(uint16_t on, uint16_t off)
 {
     pca9685_WriteCmd(PCA9684_ALL_LED_ON_L, on & 0xFF);
     pca9685_WriteCmd(PCA9684_ALL_LED_ON_H, on >> 8);
@@ -93,29 +90,21 @@ void pca9685_SetAllPwm(int on, int off)
     pca9685_WriteCmd(PCA9684_ALL_LED_OFF_H, off >> 8);
 }
 
-/*
-    def duty(self, index, value=None, invert=False):
-        if value is None:
-            pwm = self.set_pwm(index)
-            if pwm == (0, 4096):
-                value = 0
-            elif pwm == (4096, 0):
-                value = 4095
-            value = pwm[1]
-            if invert:
-                value = 4095 - value
-            return value
-        if not 0 <= value <= 4095:
-            raise ValueError("Out of range")
-        if invert:
-            value = 4095 - value
-        if value == 0:
-            self.set_pwm(index, 0, 4096)
-        elif value == 4095:
-            self.set_pwm(index, 4096, 0)
-        else:
-            self.set_pwm(index, 0, value)
+void pca9685_SetDuty(uint8_t index, uint16_t value, uint8_t invert)
+{
+    if (invert)
+    {
+        value = 4095 - value;
+    }
+    if (value == 0)
+        pca9685_SetPwm(index, 0, 4096);
+    else if (value == 4095)
+        pca9685_SetPwm(index, 4096, 0);
+    else
+        pca9685_SetPwm(index, 0, value);
+}
 
-    def PWMOFF(self, index):
-        self.set_pwm(index, 0, 0)
-*/
+void pca9685_PwmOff(uint8_t index)
+{
+    pca9685_SetPwm(index, 0, 0);
+}
