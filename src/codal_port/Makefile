@@ -90,6 +90,8 @@ SRC_C += \
 	modthis.c \
 	modutime.c \
 	mphalport.c \
+	modsuperbit.c \
+	drv_PCA9685.c \
 
 SRC_C += \
 	lib/mp-readline/readline.c \
